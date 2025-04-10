@@ -33,21 +33,18 @@ jobs:
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
         
-            - name: Log intro text
-            run: |
-                echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-                echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-            
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - name: Check out code in repository
               uses: actions/checkout@v4
-              
-            # Log successful checkout
-            - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+            
+            # Log text
+            - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+            - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"          
+            - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."            
             
             # Setup dotnet
             - name: Setup dotnet
-            uses: actions/setup-dotnet@v4
+            uses: actions/setup-dotnet@v4            
             
             # Print the reason for the manual run if it applys
             - name: 'Print Manual Run Reason'
@@ -63,8 +60,8 @@ jobs:
             
             # Build
             - name: Build
-            run: dotnet build --no-restore
+              run: dotnet build --no-restore
 
             # Run Tests
             - name: Run Tests
-            run: dotnet test --no-build
+              run: dotnet test --no-build
