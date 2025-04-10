@@ -33,7 +33,6 @@ jobs:
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
         
-            # Log some text
             - name: Log intro text
             run: |
                 echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
