@@ -1,0 +1,62 @@
+# This is a basic workflow to help you get started with Actions
+
+name: 'Convert Blueprint String to JSON'
+
+# Controls when the workflow will run
+on:
+    # Triggers the workflow on push or pr to master
+    push:
+        branches: [ "master" ]
+    pull_request:
+        branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
+        inputs:
+            reason:
+                description: 'The reason for running the workflow'
+                required: true
+                default: 'Manual Run'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+    # This workflow contains a single job called "main-job"
+    main-job:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: write
+          
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - name: Check out code in repository
+              uses: actions/checkout@v4
+            
+            # Log some text
+            - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+            - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+
+            # Log successful checkout
+            - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+            
+            # Print the reason for the manual run if it applys
+            - name: 'Print Manual Run Reason'
+              if: ${{ github.event_name == 'workflow_dispatch' }}
+              run: |
+                  echo 'Reason: ${{ github.event.inputs.reason }}'
+            
+             # Install the .NET Core workload
+            - name: Install .NET Core
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: 8.0.x
+
+            # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+            - name: Setup MSBuild.exe
+              uses: microsoft/setup-msbuild@v2
+
+            # Execute all unit tests in the solution
+            - name: Execute unit tests
+              run: dotnet test
