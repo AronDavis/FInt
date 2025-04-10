@@ -30,16 +30,21 @@ jobs:
           
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
-            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - name: Check out code in repository
-              uses: actions/checkout@v4
-            
+        
             # Log some text
             - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
             - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-
+            
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - name: Check out code in repository
+              uses: actions/checkout@v4
+              
             # Log successful checkout
             - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+            
+            # Setup dotnet
+            - name: Setup dotnet
+            uses: actions/setup-dotnet@v4
             
             # Print the reason for the manual run if it applys
             - name: 'Print Manual Run Reason'
