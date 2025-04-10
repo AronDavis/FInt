@@ -52,7 +52,11 @@ jobs:
               uses: actions/setup-dotnet@v4
               with:
                 dotnet-version: 8.0.x
+            
+            # Build
+            - name: Build
+            run: dotnet build --no-restore
 
-            # Execute all unit tests in the solution
-            - name: Execute unit tests
-              run: dotnet test
+            # Run Tests
+            - name: Run Tests
+            run: dotnet test --no-build
