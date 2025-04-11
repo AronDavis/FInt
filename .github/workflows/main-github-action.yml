@@ -73,13 +73,13 @@ jobs:
               id: commit
               run: echo "VERSION=v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-            # Release if valid
+            # Create Release
             - name: Create New Release
               if: success() && github.ref == 'refs/heads/master' # tests passed and sanity check on master branch
-              uses: softprops/action-gh-release@v2
-              with:
-                tag_name: ${{ env.VERSION }}
-                files: FInt/FInt.cs
+              run: |
+                VERSION="v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)"
+                echo "Creating release with version $VERSION"
+                gh release create "${VERSION}" FInt/FInt.cs --title "Release $VERSION" --notes "Release generated on $(date +'%Y.%m.%d') from commit $(git rev-parse --short HEAD)"
               
             # Upload Test Artifacts
             - name: Upload Test Results
