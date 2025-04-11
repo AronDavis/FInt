@@ -20,5 +20,11 @@ namespace Tests
 
             Assert.AreEqual(intValue, fint);
         }
+
+        [TestMethod]
+        public void BREAK_TESTS()
+        {
+            Assert.AreEqual(0, 1);
+        }
     }
 }
