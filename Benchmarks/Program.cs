@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters.Json;
+using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 
 namespace Benchmarks
@@ -8,9 +9,11 @@ namespace Benchmarks
     {
         static void Main(string[] args)
         {
-            var config = DefaultConfig.Instance.AddExporter(JsonExporter.Brief);
+            ManualConfig config = DefaultConfig.Instance.AddExporter(JsonExporter.Brief);
 
-            var results = BenchmarkRunner.Run<DivisionBenchmarks>(config);
+            IEnumerable<Summary> summaries = BenchmarkSwitcher
+                .FromAssembly(typeof(Program).Assembly)
+                .Run(args, config);
         }
     }
 }

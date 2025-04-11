@@ -67,9 +67,11 @@ jobs:
                 echo "## 🚀 Benchmark Summary" > benchmark_summary.md
                 echo '| Method | Mean | Error | StdDev |' >> benchmark_summary.md
                 echo '|--------|------|-------|--------|' >> benchmark_summary.md
+                
                 for file in BenchmarkDotNet.Artifacts/results/*.json; do
                   jq -r '.Benchmarks[] | "| \(.Method) | \(.Mean.Nanoseconds) ns | ±\(.StandardError.Nanoseconds) ns | \(.StandardDeviation.Nanoseconds) ns |"' "$file" >> benchmark_summary.md
                 done
+                
                 cat benchmark_summary.md >> $GITHUB_STEP_SUMMARY
 
             # Upload benchmark results as artifact
