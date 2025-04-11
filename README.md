@@ -1,16 +1,15 @@
 # 🧮 FInt — FixedInteger for C#
 
-**FInt** (*FixedInteger*) is a simple, single-file C# utility for working with integers in a fixed, immutable, and mathematically expressive way. It was designed to be lightweight, dependency-free, and easily portable across projects.
+**FInt** (*FixedInteger*) is a lightweight and deterministic C# library for working with numbers in a fixed-point arithmetic style.  With its simple, portable design, FInt is completely dependency-free and seamlessly integrates into any project requiring reliable fixed-point math.
 
 ---
 
 ## 🚀 Features
 
-- 📁 **Single file**: One file (`FInt.cs`) to drop into any C# project
+- 📁 **Single file**: One file (`FInt.cs`) to drop into any C# project!
 - ⚖️ **Immutable** struct-based design
 - 🔢 Easy to construct and compare fixed integers
 - 🧪 Fully tested with GitHub Actions CI
-- 🎯 Targets .NET 8.0+
 
 ---
 
@@ -38,13 +37,13 @@ Get the latest version of **`FInt.cs`** directly from GitHub Releases:
 
 ### Installation
 
-Simply copy [`FInt.cs`](https://github.com/AronDavis/FInt/releases/latest/download/FInt.cs) into your C# project:
+Simply copy [`FInt.cs`](https://github.com/AronDavis/FInt/releases/latest/download/FInt.cs) into your C# project directory and you're good to go!
 
 ```bash
 curl -O https://github.com/AronDavis/FInt/releases/latest/download/FInt.cs
 ```
 
-### Example
+### Usage Example
 
 ```csharp
 var ten = new FInt(10);
@@ -53,9 +52,6 @@ var five = new FInt(5);
 var sum = ten + five;
 Console.WriteLine(sum.Value); // Output: 15
 ```
-
-FInt supports arithmetic, equality, and can be extended for custom numeric logic.
-
 ---
 
 ## 🧪 Running Tests
@@ -66,37 +62,25 @@ To run the tests locally:
 dotnet test
 ```
 
-Tests are automatically run in CI. All pushes to `master` must pass tests before a release is created.
+Tests are automatically run in GitHub CI. All pushes to `master` must pass tests before a release is created.
 
 ---
 
 ## 📚 Documentation
 
-The library is fully self-documented within `FInt.cs` via XML comments. For quick reference:
-
-- `FInt(int value)` — create a new fixed integer
-- `.Value` — retrieve the underlying value
-- `+`, `-`, `==`, `!=` — basic operators supported
-- `ToString()` — prints the integer value
+The library is fully self-documented within `FInt.cs` via XML comments
 
 ---
 
 ## 🧰 Requirements
 
-- .NET 8.0 SDK or higher
-- Works with any .NET-compatible project (console, library, Unity, etc.)
-
----
-
-## 💡 Motivation
-
-`FInt` was created to explore a simplified, immutable numeric type with full test coverage and clean CI/CD automation, all contained in a single, drop-in file. Ideal for teaching, prototyping, or minimalistic development.
+- Works with any .NET-compatible project (.NET, Unity, etc.)
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Fork the repo, make your changes, and open a pull request. All code should be covered by tests and conform to the current style.
+Contributions are welcome! Fork the repo, make your changes, and open a pull request. All code should be covered by tests and conform to the current coding style.
 
 ---
 
@@ -109,8 +93,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 ## 🌟 Acknowledgements
 
 Thanks to:
-- [GitHub Actions](https://github.com/features/actions) for CI/CD
-- [.NET](https://dotnet.microsoft.com/) for the excellent platform
 - You, for checking this out!
 
 ---
