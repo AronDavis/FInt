@@ -76,6 +76,7 @@ jobs:
 
             # Upload benchmark results as artifact
             - name: Upload Benchmark Results
+              if: always()
               uses: actions/upload-artifact@v4
               with:
                 name: benchmark-results
