@@ -66,7 +66,7 @@ jobs:
                 CHANGED=$(git diff --name-only HEAD^ HEAD || true)
                 echo "Changed files:"
                 echo "$CHANGED"
-                if echo "$CHANGED" | grep -qE '^FInt\.cs$|^FInt/FInt\.Tests/.*$'; then
+                if echo "$CHANGED" | grep -qE '^FInt\/FInt\.cs$'; then
                   echo "RELEASE_NEEDED=" >> $GITHUB_ENV
                 fi
                   
