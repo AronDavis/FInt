@@ -66,8 +66,11 @@ jobs:
               if: success()
               run: |
                 echo "## 🚀 Benchmark Results" >> $GITHUB_STEP_SUMMARY
-                echo '```' >> $GITHUB_STEP_SUMMARY
-                cat Benchmarks/BenchmarkDotNet.Artifacts/results/*-report-full.json
+                echo '```json' >> $GITHUB_STEP_SUMMARY
+                for f in Benchmarks/BenchmarkDotNet.Artifacts/results/*-report-full.json; do
+                  [ -e "$f" ] || continue  # skip if no matching file
+                  cat "$f" >> $GITHUB_STEP_SUMMARY
+                done
                 echo '```' >> $GITHUB_STEP_SUMMARY
 
             # Upload benchmark results as artifact
