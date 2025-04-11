@@ -34,8 +34,11 @@ jobs:
         steps:
         
             # Log text
-            - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-            - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"          
+            - name: Log intro text
+            - run: |
+                echo 🎉 The job was automatically triggered by a ${{ github.event_name }} event.
+                echo 🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!
+                echo Current directory is: %cd%
             
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - name: Check out code in repository
@@ -58,7 +61,7 @@ jobs:
             
             # Build
             - name: Build
-              run: dotnet build FInt.sln --no-restore
+              run: dotnet build --no-restore
 
             # Run Tests
             - name: Run Tests
