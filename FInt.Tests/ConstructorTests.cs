@@ -1,10 +1,12 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Tests
 {
     [TestClass]
     public class ConstructorTests
     {
         [TestMethod]
-        public void EmptyConstructorShouldEqualZero()
+        public void EmptyConstructor_ShouldEqualZero()
         {
             FInt fint = new FInt();
 
@@ -12,7 +14,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void IntConstructorShouldEqualInt()
+        public void IntConstructor_ShouldEqualInt()
         {
             int intValue = 7;
 
@@ -22,13 +24,19 @@ namespace Tests
         }
 
         [TestMethod]
-        public void LongConstructorShouldEqualLong()
+        public void LongConstructor_ShouldEqualLong()
         {
             long longValue = 7;
 
             FInt fint = new FInt(longValue);
 
             Assert.AreEqual(longValue, fint);
+        }
+
+        [TestMethod]
+        public void LongConstructor_ThrowsOnOverflow()
+        {
+            Assert.ThrowsException<ArgumentException>(() => new FInt(long.MaxValue));
         }
     }
 }

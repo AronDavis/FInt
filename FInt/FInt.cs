@@ -18,10 +18,7 @@ public struct FInt
 	{
 		get 
 		{
-			return new FInt()
-			{
-				_value = long.MaxValue
-			};
+			return new FInt(long.MaxValue, UseScale.None);
 		}
 	}
 
@@ -32,21 +29,18 @@ public struct FInt
 	{
 		get 
 		{
-			return new FInt()
-			{
-				_value = long.MinValue
-			};
+			return new FInt(long.MinValue, UseScale.None);
 		}
 	}
 
 	/// <summary>
-	/// Gets the decimal portion of the number.
+	/// Gets the decimal value of the number.
 	/// </summary>
     public FInt Decimal
     {
         get
         {
-            return new FInt(_value % _SCALE, false);
+            return new FInt(_value % _SCALE, UseScale.None);
         }
     }
 
@@ -68,55 +62,64 @@ public struct FInt
         }
     }
 
+	#endregion
+
+	#region Private Enum
+
+	/// <summary>
+	/// This is used for cleanly distinguishing constructor signatures.
+	/// </summary>
+	private enum UseScale : byte
+	{
+		None
+	}
+
     #endregion
 
     #region Constructors
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of <see cref="FInt"/> from a scaled <see cref="int"/> value.
     /// </summary>
     /// <param name="value">The value to convert to <see cref="FInt"/>.</param>
-    /// <param name="useScale">Whether or not to multiply by <paramref name="value"/> the internal scale constant.</param>
-    public FInt(int value, bool useScale = true)
+    public FInt(int value)
 	{
-		if (useScale)
-		{
-			_value = value * _SCALE;
-			return;
-		}
-
-		_value = value;
+		_value = value * _SCALE;
 	}
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of <see cref="FInt"/> from a <see cref="long"/> value.
     /// </summary>
     /// <param name="value">The value to convert to <see cref="FInt"/>.</param>
-    /// <param name="useScale">Whether or not to multiply by <paramref name="value"/> the internal scale constant.</param>
 	/// <exception cref="ArgumentException">Will throw if <paramref name="value"/> overflows when scaled internally.</exception>
-    public FInt(long value, bool useScale = true)
+    public FInt(long value)
 	{
-        if (useScale)
+        if (value > long.MaxValue / _SCALE || value < long.MinValue / _SCALE)
         {
-            if (value > long.MaxValue / _SCALE || value < long.MinValue / _SCALE)
-            {
-				throw new ArgumentException("FInt overflow on creation with scaling", nameof(value));
-            }
-
-            _value = value * _SCALE;
-            return;
+            throw new ArgumentException("FInt overflow on creation with scaling", nameof(value));
         }
 
+        _value = value * _SCALE;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="FInt"/> from a raw internal value without applying scaling.
+    /// Intended for internal use only.
+    /// </summary>
+    /// <param name="value">The value to convert to <see cref="FInt"/>.</param>
+    /// <param name="_">This parameter only exists to distinguish from the public constructor <see cref="FInt(long)"/>.</param>
+    private FInt(long value, UseScale _)
+    {
         _value = value;
     }
-	
+
     #endregion
 
     #region Operator Overloads
 
     public static FInt operator % (FInt left, FInt right)
 	{
-		return new FInt(left._value % right._value, false);
+		return new FInt(left._value % right._value, UseScale.None);
 	}
 
 	#region Relational Operators
@@ -157,12 +160,12 @@ public struct FInt
 
 	public static FInt operator + (FInt left, FInt right)
 	{
-		return new FInt(left._value + right._value, false);
+		return new FInt(left._value + right._value, UseScale.None);
 	}
 
 	public static FInt operator + (FInt fi, int i)
 	{
-		return new FInt(fi._value + i * _SCALE, false);
+		return new FInt(fi._value + i * _SCALE, UseScale.None);
 	}
 	
 	public static FInt operator + (int i, FInt fi) 
@@ -172,7 +175,7 @@ public struct FInt
 
 	public static FInt operator + (FInt fi, long lng)
 	{
-		return new FInt(fi._value + lng * _SCALE, false);
+		return new FInt(fi._value + lng * _SCALE, UseScale.None);
 	}
 
 	public static FInt operator + (long lng, FInt fi) 
@@ -192,12 +195,12 @@ public struct FInt
 
     public static FInt operator - (FInt left, FInt right)
 	{
-		return new FInt(left._value - right._value, false);
+		return new FInt(left._value - right._value, UseScale.None);
 	}
 
 	public static FInt operator - (FInt fi, int i)
 	{
-		return new FInt(fi._value - i * _SCALE, false);
+		return new FInt(fi._value - i * _SCALE, UseScale.None);
 	}
 	
 	public static FInt operator - (int i, FInt fi) 
@@ -207,7 +210,7 @@ public struct FInt
 
 	public static FInt operator - (FInt fi, long lng)
 	{
-		return new FInt(fi._value - lng * _SCALE, false);
+		return new FInt(fi._value - lng * _SCALE, UseScale.None);
 	}
 	
 	public static FInt operator - (long lng, FInt fi) 
@@ -230,7 +233,7 @@ public struct FInt
 			throw new ArgumentException("FInt overflow on negative operator.", nameof(value));
 		}
 
-		return new FInt(-value._value, false);
+		return new FInt(-value._value, UseScale.None);
 	}
 
 	#region Multiplication
@@ -265,13 +268,13 @@ public struct FInt
 			+ (leftWhole * rightDecimal)
 			+ (leftDecimal * rightWhole)
 			+ ((leftDecimal * rightDecimal) / _SCALE)
-			, false
-			);
+			, UseScale.None
+            );
 	}
 
 	public static FInt operator * (FInt fi1, int i)
 	{
-		return new FInt(fi1._value * i, false);
+		return new FInt(fi1._value * i, UseScale.None);
 	}
 
 	public static FInt operator * (int i, FInt fi1) 
@@ -281,7 +284,7 @@ public struct FInt
 
 	public static FInt operator * (FInt fi1, long lng)
 	{
-		return new FInt(fi1._value * lng, false);
+		return new FInt(fi1._value * lng, UseScale.None);
 	}
 
 	public static FInt operator * (long lng, FInt fi1) 
@@ -301,17 +304,17 @@ public struct FInt
 		long remainder = _SCALE * (left._value - whole * right._value);
 		remainder /= right._value;
 
-		return new FInt(whole * _SCALE + remainder, false);
+		return new FInt(whole * _SCALE + remainder, UseScale.None);
 	}
 
 	public static FInt operator / (FInt fi1, int i)
 	{
-		return new FInt(fi1._value / i, false);
+		return new FInt(fi1._value / i, UseScale.None);
 	}
 
 	public static FInt operator / (FInt fi1, long lng)
 	{
-		return new FInt(fi1._value / lng, false);
+		return new FInt(fi1._value / lng, UseScale.None);
 	}
 
 	#endregion
@@ -338,17 +341,12 @@ public struct FInt
 		//if value is negative and it only has decimal digits
 		if (_value < 0 && _value > -_SCALE)
 		{
-			return "-" + (_value / _SCALE) + "." + (Abs(this)._value % _SCALE).ToString().PadLeft(_PRICISION, '0');
+			return $"-{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(_PRICISION, '0');
 		}
 		else
 		{
-			return (_value / _SCALE) + "." + (Abs(this)._value % _SCALE).ToString().PadLeft(_PRICISION, '0');
+			return $"{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(_PRICISION, '0');
 		}
-	}
-
-	public static FInt Parse(string s)
-	{
-		return new FInt(long.Parse(s));
 	}
 
 	#region Conversions
@@ -403,7 +401,7 @@ public struct FInt
     /// <param name="value"></param>
     public static implicit operator FInt(float value)
 	{
-		return new FInt((long)(value * _SCALE), false); //TODO: do this differently
+		return new FInt((long)(value * _SCALE), UseScale.None); //TODO: do this differently
 	}
 
     /// <summary>
@@ -429,11 +427,21 @@ public struct FInt
     #region Utility Functions
 
 	/// <summary>
-	/// Used to make fractional values.
+	/// Converts the string representation of a number to its <see cref="FInt"/> equivalent.
 	/// </summary>
-	/// <param name="numerator"></param>
-	/// <param name="denominator"></param>
+	/// <param name="s">A string containing a number to convert.</param>
 	/// <returns></returns>
+    public static FInt Parse(string s)
+    {
+        return new FInt(long.Parse(s));
+    }
+
+    /// <summary>
+    /// Used to make fractional values.
+    /// </summary>
+    /// <param name="numerator"></param>
+    /// <param name="denominator"></param>
+    /// <returns></returns>
     public static FInt MakeFraction(int numerator, int denominator)
     {
         return numerator.FI() / denominator.FI();
@@ -482,7 +490,7 @@ public struct FInt
 	/// <returns></returns>
 	public static FInt Abs(FInt value)
 	{
-		return new FInt((value._value < 0) ? -value._value : value._value, false);
+		return new FInt((value._value < 0) ? -value._value : value._value, UseScale.None);
 	}
 
 	/// <summary>
@@ -539,7 +547,7 @@ public struct FInt
 	/// <returns></returns>
 	public static FInt Sin(FInt a)
 	{
-		return new FInt(_sinLookUp((int)a), false);
+		return new FInt(_sinLookUp((int)a), UseScale.None);
 	}
 
     /// <summary>
@@ -549,7 +557,7 @@ public struct FInt
     /// <returns></returns>
     public static FInt Cos(FInt a)
 	{
-		return new FInt(_cosLookUp((int)a), false);
+		return new FInt(_cosLookUp((int)a), UseScale.None);
 	}
 
     /// <summary>
