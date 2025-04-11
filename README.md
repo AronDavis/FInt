@@ -6,9 +6,10 @@
 
 ## 🚀 Features
 
-- 📁 **One file** (`FInt.cs`) to drop into any C# project!
-- ⚖️ **Immutable** struct-based design!
-- 🧪 **Fully tested** with GitHub Actions CI!
+- 🧰 **Works** with any .NET-compatible project (.NET, Unity, etc.)
+- 📁 **One file** (`FInt.cs`) to drop into any C# project
+- ⚖️ **Immutable** struct-based design
+- 🧪 **Fully tested** with GitHub Actions CI
 
 ---
 
@@ -68,12 +69,6 @@ Tests are automatically run in GitHub CI. All pushes to `master` must pass tests
 ## 📚 Documentation
 
 The library is fully self-documented within `FInt.cs` via XML comments
-
----
-
-## 🧰 Requirements
-
-- Works with any .NET-compatible project (.NET, Unity, etc.)
 
 ---
 
