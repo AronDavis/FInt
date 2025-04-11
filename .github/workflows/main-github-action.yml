@@ -35,7 +35,7 @@ jobs:
         
             # Log text
             - name: Log intro text
-            - run: |
+              run: |
                 echo 🎉 The job was automatically triggered by a ${{ github.event_name }} event.
                 echo 🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!
                 echo Current directory is: %cd%
