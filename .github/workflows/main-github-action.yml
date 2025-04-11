@@ -70,13 +70,16 @@ jobs:
             
             # Get Version
             - name: Get Version
-              id: commit
+              if: > # push only, tests passed, and sanity check on master branch
+                success()
+                && github.event_name == 'push' 
+                && github.ref == 'refs/heads/master'
               run: echo "VERSION=v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
             # Create Release
             - name: Create New Release
               if: > # push only, tests passed, and sanity check on master branch
-                success() 
+                success()
                 && github.event_name == 'push' 
                 && github.ref == 'refs/heads/master'
               run: |
