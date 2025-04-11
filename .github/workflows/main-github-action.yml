@@ -68,12 +68,20 @@ jobs:
             - name: Run Tests
               run: dotnet test FInt.sln --no-build --logger "trx"
             
-            # Update FInt artifact
-            - name: Upload FInt.cs as artifact
-              uses: actions/upload-artifact@v4
+            # Get Version
+            - name: Get Version
+              id: commit
+              run: echo "VERSION=v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+            - name: Create or Update Release for master
+              if: success() && github.ref == 'refs/heads/master'
+              uses: softprops/action-gh-release@v2
               with:
-                name: FInt.cs
-                path: FInt/FInt.cs
+                tag_name: ${{ env.COMMIT_HASH }}
+                release_name: "Release ${{ env.COMMIT_HASH }}"
+                files: FInt/FInt.cs
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               
             # Upload Test Artifacts
             - name: Upload Test Results
