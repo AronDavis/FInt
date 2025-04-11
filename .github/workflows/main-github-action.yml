@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: 'Build/Run Tests/Publish Artifacts'
+name: 'Build/Test/Release'
 
 # Controls when the workflow will run
 on:
@@ -40,6 +40,12 @@ jobs:
                 echo 🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!
                 echo Current directory is: ${{ github.workspace }}
             
+            # Print the reason for the manual run if applicable
+            - name: 'Print Manual Run Reason'
+              if: ${{ github.event_name == 'workflow_dispatch' }}
+              run: |
+                  echo 'Reason: ${{ github.event.inputs.reason }}'
+            
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - name: Check out code in repository
               uses: actions/checkout@v4            
@@ -48,13 +54,20 @@ jobs:
             - name: Install .NET Core
               uses: actions/setup-dotnet@v4
               with:
-                dotnet-version: 8.0.x
-            
-            # Print the reason for the manual run if it applies
-            - name: 'Print Manual Run Reason'
-              if: ${{ github.event_name == 'workflow_dispatch' }}
-              run: |
-                  echo 'Reason: ${{ github.event.inputs.reason }}'
+                dotnet-version: 8.0.x            
+                  
+            # Check if release is needed
+            - name: Check if release is needed
+              if: > # is a push event and sanity check on master branch
+                github.event_name == 'push' 
+                && github.ref == 'refs/heads/master'
+              run: | # RELEASE_NEEDED is set to empty to simplify checks (it is possible to set it to a string value e.g. RELEASE_NEEDED=true)
+                git fetch origin master --depth=1
+                CHANGED=$(git diff --name-only HEAD^ HEAD)
+                echo "$CHANGED"
+                if echo "$CHANGED" | grep -qE '^FInt\.cs$|^FInt/FInt\.Tests/.*$'; then
+                  echo "RELEASE_NEEDED=" >> $GITHUB_ENV
+                fi
                   
             # Restore
             - name: Restore
@@ -68,20 +81,14 @@ jobs:
             - name: Run Tests
               run: dotnet test FInt.sln --no-build --logger "trx"
             
-            # Get Version
-            - name: Get Version
-              if: > # push only, tests passed, and sanity check on master branch
-                success()
-                && github.event_name == 'push' 
-                && github.ref == 'refs/heads/master'
+            # Set Version
+            - name: Set Version
+              if: success() && env.RELEASE_NEEDED
               run: echo "VERSION=v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
             # Create Release
             - name: Create New Release
-              if: > # push only, tests passed, and sanity check on master branch
-                success()
-                && github.event_name == 'push' 
-                && github.ref == 'refs/heads/master'
+              if: success() && env.RELEASE_NEEDED
               run: |
                 VERSION="v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)"
                 echo "Creating release with version $VERSION"
