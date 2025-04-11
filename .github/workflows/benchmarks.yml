@@ -62,16 +62,15 @@ jobs:
                 dotnet run --project Benchmarks/Benchmarks.csproj --configuration Release
             
             # Add workflow summary
-            - name: Add benchmark results to workflow summary
-              if: success()
+            - name: Generate Markdown Summary from Benchmark JSON
               run: |
-                echo "## 🚀 Benchmark Results" >> $GITHUB_STEP_SUMMARY
-                echo '```json' >> $GITHUB_STEP_SUMMARY
-                for f in BenchmarkDotNet.Artifacts/results/*.json; do
-                  [ -e "$f" ] || continue  # skip if no matching file
-                  cat "$f" >> $GITHUB_STEP_SUMMARY
+                echo "## 🚀 Benchmark Summary" > benchmark_summary.md
+                echo '| Method | Mean | Error | StdDev |' >> benchmark_summary.md
+                echo '|--------|------|-------|--------|' >> benchmark_summary.md
+                for file in Benchmarks/BenchmarkDotNet.Artifacts/results/*.json; do
+                  jq -r '.Benchmarks[] | "| \(.Method) | \(.Mean.Nanoseconds) ns | ±\(.StandardError.Nanoseconds) ns | \(.StandardDeviation.Nanoseconds) ns |"' "$file" >> benchmark_summary.md
                 done
-                echo '```' >> $GITHUB_STEP_SUMMARY
+                cat benchmark_summary.md >> $GITHUB_STEP_SUMMARY
 
             # Upload benchmark results as artifact
             - name: Upload Benchmark Results
