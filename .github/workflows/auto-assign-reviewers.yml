@@ -14,6 +14,7 @@ jobs:
     
       # Get PR details and determine code owners
       - name: Get Code Owners
+        id: get_code_owners
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: code-owners
