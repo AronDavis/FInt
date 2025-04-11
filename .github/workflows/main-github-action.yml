@@ -38,7 +38,7 @@ jobs:
               run: |
                 echo 🎉 The job was automatically triggered by a ${{ github.event_name }} event.
                 echo 🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!
-                echo Current directory is: %cd%
+                echo Current directory is: ${{ github.workspace }}
             
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - name: Check out code in repository
@@ -47,17 +47,21 @@ jobs:
             # Log successful checkout
             - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."            
             
-             # Install the .NET Core workload
+             # Install the .NET Core
             - name: Install .NET Core
               uses: actions/setup-dotnet@v4
               with:
-                dotnet-version: 8.0.x         
+                dotnet-version: 8.0.x
             
             # Print the reason for the manual run if it applies
             - name: 'Print Manual Run Reason'
               if: ${{ github.event_name == 'workflow_dispatch' }}
               run: |
                   echo 'Reason: ${{ github.event.inputs.reason }}'
+                  
+            # Restore
+            - name: Restore
+              run: dotnet restore
             
             # Build
             - name: Build
