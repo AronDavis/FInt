@@ -74,11 +74,11 @@ jobs:
               run: echo "VERSION=v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
             # Release if valid
-            - name: Create or Update Release for master
+            - name: Create New Release
               if: success() && github.ref == 'refs/heads/master'
               uses: softprops/action-gh-release@v2
               with:
-                tag_name: ${{ env.COMMIT_HASH }}
+                tag_name: ${{ env.VERSION }}
                 release_name: "Release ${{ env.COMMIT_HASH }}"
                 files: FInt/FInt.cs
               
