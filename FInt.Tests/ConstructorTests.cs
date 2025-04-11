@@ -20,5 +20,15 @@ namespace Tests
 
             Assert.AreEqual(intValue, fint);
         }
+
+        [TestMethod]
+        public void LongConstructorShouldEqualLong()
+        {
+            long longValue = 7;
+
+            FInt fint = new FInt(longValue);
+
+            Assert.AreEqual(longValue, fint);
+        }
     }
 }
