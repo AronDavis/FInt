@@ -8,7 +8,7 @@ namespace Benchmarks
     {
         static void Main(string[] args)
         {
-            var config = DefaultConfig.Instance.AddExporter(JsonExporter.Full);
+            var config = DefaultConfig.Instance.AddExporter(JsonExporter.Brief);
 
             var results = BenchmarkRunner.Run<DivisionBenchmarks>(config);
         }

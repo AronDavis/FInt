@@ -67,7 +67,7 @@ jobs:
               run: |
                 echo "## 🚀 Benchmark Results" >> $GITHUB_STEP_SUMMARY
                 echo '```json' >> $GITHUB_STEP_SUMMARY
-                for f in BenchmarkDotNet.Artifacts/results/*-report-full.json; do
+                for f in BenchmarkDotNet.Artifacts/results/*.json; do
                   [ -e "$f" ] || continue  # skip if no matching file
                   cat "$f" >> $GITHUB_STEP_SUMMARY
                 done
