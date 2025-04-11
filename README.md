@@ -16,7 +16,7 @@
 
 | Workflow | Status |
 |----------|--------|
-| **CI: Build & Test** | ![Test Status](https://img.shields.io/github/actions/workflow/status/AronDavis/FInt/main-github-action.yml?branch=master)
+| **CI: Build & Test** | ![Test Status](https://img.shields.io/github/actions/workflow/status/AronDavis/FInt/main-github-action.yml?branch=master&&label=Tests)
 
 Automated tests run on every push and pull request to `master`.
 
