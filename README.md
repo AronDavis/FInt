@@ -1,6 +1,6 @@
 # 🧮 FInt - FixedInteger for C#
 
-**FInt** (*FixedInteger*) is a lightweight and deterministic C# library for working with numbers in a fixed-point arithmetic style.  With its simple, portable design, FInt is completely dependency-free and seamlessly integrates into any project requiring reliable fixed-point math.
+**FInt** (*FixedInteger*) is a lightweight and deterministic C# library for working with numbers using fixed-point arithmetic.  With its simple, portable design, FInt is completely dependency-free and seamlessly integrates into any project requiring reliable fixed-point math.
 
 ---
 
