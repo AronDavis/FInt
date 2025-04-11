@@ -69,7 +69,7 @@ jobs:
                 echo '|--------|------|-------|--------|' >> benchmark_summary.md
                 
                 for file in BenchmarkDotNet.Artifacts/results/*.json; do
-                  jq -r '.Benchmarks[] | "| \(.Method) | \(.Statistics.Mean) | ±\(.Statistics.StandardError) | \(.Statistics.StandardDeviation) |"' "$file" >> benchmark_summary.md
+                  jq -r '.Benchmarks[] | "| \(.Method) | \((.Statistics.Mean * 1000) | round) ns | ±\((.Statistics.StandardError * 1000) | round) ns | \((.Statistics.StandardDeviation * 1000) | round) ns |"' "$file" >> benchmark_summary.md
                 done
                 
                 cat benchmark_summary.md >> $GITHUB_STEP_SUMMARY
