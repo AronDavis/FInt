@@ -75,7 +75,10 @@ jobs:
 
             # Create Release
             - name: Create New Release
-              if: success() && github.ref == 'refs/heads/master' # tests passed and sanity check on master branch
+              if: > # push only, tests passed, and sanity check on master branch
+                success() 
+                && github.event_name == 'push' 
+                && github.ref == 'refs/heads/master'
               run: |
                 VERSION="v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)"
                 echo "Creating release with version $VERSION"
