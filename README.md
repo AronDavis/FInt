@@ -8,8 +8,8 @@
 
 - 📁 **Only one file** (`FInt.cs`) to drop into any C# project
 - 🔨 **Works** with any .NET-compatible project (.NET, Unity, etc.)
-- ⚖️ **Immutable** struct-based design
-- 🧪 **Fully tested** with GitHub Actions CI
+- ⚖️ **Fast & Immutable** struct-based design!
+- 🧪 **Fully tested** with GitHub Actions CI!
 
 ---
 
