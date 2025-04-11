@@ -6,10 +6,9 @@
 
 ## 🚀 Features
 
-- 📁 **Single file**: One file (`FInt.cs`) to drop into any C# project!
-- ⚖️ **Immutable** struct-based design
-- 🔢 Easy to construct and compare fixed integers
-- 🧪 Fully tested with GitHub Actions CI
+- 📁 **One file** (`FInt.cs`) to drop into any C# project!
+- ⚖️ **Immutable** struct-based design!
+- 🧪 **Fully tested** with GitHub Actions CI!
 
 ---
 
