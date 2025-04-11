@@ -45,10 +45,10 @@ curl -O https://github.com/AronDavis/FInt/releases/latest/download/FInt.cs
 ### Usage Example
 
 ```csharp
-var ten = new FInt(10);
-var five = new FInt(5);
+FInt ten = new FInt(10);
+FInt five = new FInt(5);
 
-var sum = ten + five;
+FInt sum = ten + five;
 Console.WriteLine(sum.Value); // Output: 15
 ```
 ---
