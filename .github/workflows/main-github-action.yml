@@ -33,8 +33,8 @@ jobs:
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
         
-            # Log text
-            - name: Log intro text
+            # Log run info
+            - name: Log run info
               run: |
                 echo 🎉 The job was automatically triggered by a ${{ github.event_name }} event.
                 echo 🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!
@@ -42,10 +42,7 @@ jobs:
             
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - name: Check out code in repository
-              uses: actions/checkout@v4
-            
-            # Log successful checkout
-            - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."            
+              uses: actions/checkout@v4            
             
              # Install the .NET Core
             - name: Install .NET Core
@@ -65,8 +62,25 @@ jobs:
             
             # Build
             - name: Build
-              run: dotnet build --no-restore
+              run: dotnet build FInt.sln --no-restore
 
-            # Run Tests
+            # Run Tests -- output test results in the Visual Studio Test Results (TRX) format.
             - name: Run Tests
-              run: dotnet test --no-build
+              run: dotnet test FInt.sln --no-build --logger "trx"
+              
+            # Upload Test Artifacts
+            - name: Upload Test Results
+              if: always()  # ensures results are uploaded even if tests fail
+              uses: actions/upload-artifact@v4
+              with:
+                name: test-results
+                path: '**/TestResults/*.trx'
+            
+            # Publish Test Report
+            - name: Publish Test Report
+              if: always()
+              uses: dorny/test-reporter@v2
+              with:
+                name: .NET Test Results
+                path: '**/TestResults/*.trx'
+                reporter: dotnet-trx
