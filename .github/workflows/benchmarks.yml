@@ -1,0 +1,77 @@
+# This is a basic workflow to help you get started with Actions
+
+name: 'Benchmarks'
+
+# Controls when the workflow will run
+on:
+    # Triggers the workflow on push or pr to master
+    push:
+        branches: [ "master" ]
+    pull_request:
+        branches: [ "master" ]
+
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
+        inputs:
+            reason:
+                description: 'The reason for running the workflow'
+                required: true
+                default: 'Manual Run'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+    # This workflow contains a single job called "main-job"
+    benchmark:
+    
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+        
+        permissions:
+            contents: write
+        
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+        
+            # Log run info
+            - name: Log run info
+              run: |
+                echo 🎉 The job was automatically triggered by a ${{ github.event_name }} event.
+                echo 🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!
+                echo Current directory is: ${{ github.workspace }}
+            
+            # Print the reason for the manual run if applicable
+            - name: 'Print Manual Run Reason'
+              if: ${{ github.event_name == 'workflow_dispatch' }}
+              run: |
+                  echo 'Reason: ${{ github.event.inputs.reason }}'
+            
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - name: Check out code in repository
+              uses: actions/checkout@v4            
+            
+             # Install the .NET Core
+            - name: Install .NET Core
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: 9.0.x
+                  
+            # Restore
+            - name: Restore
+              run: dotnet restore
+            
+            # Build
+            - name: Build
+              run: dotnet build FInt.sln --no-restore
+              
+            # Run  
+            - name: Run Benchmarks
+              run: |
+                dotnet run --project FInt.Benchmark/FInt.Benchmark.csproj > benchmark_results.txt
+
+            # Upload benchmark results as artifact
+            - name: Upload Benchmark Results
+                uses: actions/upload-artifact@v4
+                with:
+                  name: benchmark-results
+                  path: benchmark_results.txt
