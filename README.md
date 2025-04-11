@@ -63,13 +63,13 @@ To run the tests locally:
 dotnet test
 ```
 
-Tests are automatically run in GitHub CI. All pushes to `master` must pass tests before a release is created.
+Tests are automatically run in GitHub CI. Every push to `master` must pass tests before a release is created.
 
 ---
 
 ## 📚 Documentation
 
-The library is fully self-documented within `FInt.cs` via XML comments
+The library is fully self-documented within `FInt.cs` via XML comments.
 
 ---
 
