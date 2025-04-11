@@ -60,10 +60,22 @@ jobs:
             - name: Restore, Build, and Run Benchmarks
               run: |
                 dotnet run --project Benchmarks/Benchmarks.csproj --configuration Release
+            
+            # Add workflow summary
+            - name: Add benchmark results to workflow summary
+              if: success()
+              run: |
+                echo "## 🚀 Benchmark Results" >> $GITHUB_STEP_SUMMARY
+                echo '```json' >> $GITHUB_STEP_SUMMARY
+                for f in BenchmarkDotNet.Artifacts/results/*-report-full.json; do
+                  [ -e "$f" ] || continue  # skip if no matching file
+                  cat "$f" >> $GITHUB_STEP_SUMMARY
+                done
+                echo '```' >> $GITHUB_STEP_SUMMARY
 
             # Upload benchmark results as artifact
             - name: Upload Benchmark Results
               uses: actions/upload-artifact@v4
               with:
                 name: benchmark-results
-                path: Benchmarks/BenchmarkDotNet.Artifacts
+                path: BenchmarkDotNet.Artifacts/results/*.json
