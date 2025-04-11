@@ -49,7 +49,7 @@ FInt ten = new FInt(10);
 FInt five = new FInt(5);
 
 FInt sum = ten + five;
-Console.WriteLine(sum.Value); // Output: 15
+Console.WriteLine(sum); // Output: 15
 ```
 ---
 
