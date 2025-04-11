@@ -80,8 +80,8 @@ jobs:
                 VERSION="v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)"
                 echo "Creating release with version $VERSION"
                 gh release create "${VERSION}" FInt/FInt.cs \
-                --title "Release $VERSION" \
-                --notes "Release generated on $(date +'%Y.%m.%d') from commit $(git rev-parse --short HEAD)"
+                    --title "Release $VERSION" \
+                    --notes "Release generated on $(date +'%Y.%m.%d') from commit $(git rev-parse --short HEAD)"
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               
