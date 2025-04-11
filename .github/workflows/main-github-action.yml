@@ -26,10 +26,10 @@ jobs:
     
         # The type of runner that the job will run on
         runs-on: ubuntu-latest
-
+        
         permissions:
             contents: write
-          
+        
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
         
@@ -79,7 +79,11 @@ jobs:
               run: |
                 VERSION="v.$(date +'%Y.%m.%d.%H.%M.%S')-$(git rev-parse --short HEAD)"
                 echo "Creating release with version $VERSION"
-                gh release create "${VERSION}" FInt/FInt.cs --title "Release $VERSION" --notes "Release generated on $(date +'%Y.%m.%d') from commit $(git rev-parse --short HEAD)"
+                gh release create "${VERSION}" FInt/FInt.cs \
+                --title "Release $VERSION" \
+                --notes "Release generated on $(date +'%Y.%m.%d') from commit $(git rev-parse --short HEAD)"
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               
             # Upload Test Artifacts
             - name: Upload Test Results
