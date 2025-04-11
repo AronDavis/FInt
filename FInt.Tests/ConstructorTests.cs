@@ -24,7 +24,7 @@ namespace Tests
         [TestMethod]
         public void BREAK_TESTS()
         {
-            Assert.AreEqual(0, 1);
+            Assert.AreEqual(0, 2);
         }
     }
 }
