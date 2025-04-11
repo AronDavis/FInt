@@ -55,19 +55,12 @@ jobs:
               uses: actions/setup-dotnet@v4
               with:
                 dotnet-version: 9.0.x
-                  
-            # Restore
-            - name: Restore
-              run: dotnet restore
-            
-            # Build
-            - name: Build
-              run: dotnet build FInt.sln --no-restore
               
-            # Run  
-            - name: Run Benchmarks
+            # Restore/Build/Run
+            - name: Restore, Build, and Run Benchmarks
               run: |
-                dotnet run --project FInt.Benchmark/FInt.Benchmark.csproj > benchmark_results.txt
+                dotnet run --project FInt.Benchmark/FInt.Benchmark.csproj --configuration Release \
+                  > benchmark_results.txt
 
             # Upload benchmark results as artifact
             - name: Upload Benchmark Results
