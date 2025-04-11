@@ -61,13 +61,13 @@ jobs:
               if: > # is a push event and sanity check on master branch
                 github.event_name == 'push' 
                 && github.ref == 'refs/heads/master'
-              run: | # RELEASE_NEEDED is set to empty to simplify checks (it is possible to set it to a string value e.g. RELEASE_NEEDED=true)
+              run: | # RELEASE_NEEDED is set to a string value (keep that in mind that if you don't check value)
                 git fetch origin master --depth=2
                 CHANGED=$(git diff --name-only HEAD^ HEAD || true)
                 echo "Changed files:"
                 echo "$CHANGED"
                 if echo "$CHANGED" | grep -qE '^FInt\/FInt\.cs$'; then
-                  echo "RELEASE_NEEDED=" >> $GITHUB_ENV
+                  echo "RELEASE_NEEDED=true" >> $GITHUB_ENV
                   echo "Release is needed."
                 fi
                   
