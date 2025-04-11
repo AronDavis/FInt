@@ -1,0 +1,25 @@
+name: Auto Assign Code Owner Reviewer
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types:
+      - opened
+      - edited
+
+jobs:
+  assign-reviewer:
+    runs-on: ubuntu-latest
+    steps:
+    
+      # Get PR details and determine code owners
+      - name: Get Code Owners
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: code-owners
+
+      - name: Assign Code Owner as Reviewer
+        if: ${{ steps.get_code_owners.outputs.assignee != '' }}
+        uses: peter-evans/assign-reviewer@v2
+        with:
+          reviewers: ${{ steps.get_code_owners.outputs.assignee }}
