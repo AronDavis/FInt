@@ -6,8 +6,9 @@
 
 ## 🚀 Features
 
-- 📁 **Only one file** (`FInt.cs`) to drop into any C# project
-- 🔨 **Works** with any .NET-compatible project (.NET, Unity, etc.)
+- 📁 **Only one file** (`FInt.cs`) required for your projects!
+- 🔨 **Works** with any .NET-compatible project!
+- 🚫 **Dependency-free** with no external libraries required!
 - ⚖️ **Fast & Immutable** struct-based design!
 - 🧪 **Fully tested** with GitHub Actions CI!
 
