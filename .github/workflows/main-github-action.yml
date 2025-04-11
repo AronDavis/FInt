@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: 'Buid/Run Tests/Publish Artifacts'
+name: 'Build/Run Tests/Publish Artifacts'
 
 # Controls when the workflow will run
 on:
@@ -41,21 +41,17 @@ jobs:
             - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"          
             - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."            
             
-            # Setup dotnet
-            - name: Setup dotnet
-            uses: actions/setup-dotnet@v4            
-            
-            # Print the reason for the manual run if it applys
-            - name: 'Print Manual Run Reason'
-              if: ${{ github.event_name == 'workflow_dispatch' }}
-              run: |
-                  echo 'Reason: ${{ github.event.inputs.reason }}'
-            
              # Install the .NET Core workload
             - name: Install .NET Core
               uses: actions/setup-dotnet@v4
               with:
-                dotnet-version: 8.0.x
+                dotnet-version: 8.0.x         
+            
+            # Print the reason for the manual run if it applies
+            - name: 'Print Manual Run Reason'
+              if: ${{ github.event_name == 'workflow_dispatch' }}
+              run: |
+                  echo 'Reason: ${{ github.event.inputs.reason }}'
             
             # Build
             - name: Build
