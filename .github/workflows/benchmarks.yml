@@ -59,7 +59,7 @@ jobs:
             # Restore/Build/Run
             - name: Restore, Build, and Run Benchmarks
               run: |
-                dotnet run --project FInt.Benchmark/FInt.Benchmark.csproj --configuration Release \
+                dotnet run --project Benchmarks/Benchmarks.csproj --configuration Release \
                   > benchmark_results.txt
 
             # Upload benchmark results as artifact
