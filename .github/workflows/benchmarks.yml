@@ -61,6 +61,15 @@ jobs:
               run: |
                 dotnet run --project Benchmarks/Benchmarks.csproj --configuration Release \
                   > benchmark_results.txt
+            
+            # Add workflow summary
+            - name: Add benchmark results to workflow summary
+              if: success()
+              run: |
+                echo "## 🚀 Benchmark Results" >> $GITHUB_STEP_SUMMARY
+                echo '```' >> $GITHUB_STEP_SUMMARY
+                cat benchmark_results.txt >> $GITHUB_STEP_SUMMARY
+                echo '```' >> $GITHUB_STEP_SUMMARY
 
             # Upload benchmark results as artifact
             - name: Upload Benchmark Results
