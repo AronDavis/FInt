@@ -25,11 +25,11 @@ Automated tests run on every push and pull request to `master`.
 
 ## 📦 Latest Release
 
-Get the latest version of **`FInt.cs`** directly from GitHub Releases:
+Get the latest version of **`FInt.cs`** here:
 
 - 🔗 [Download Latest `FInt.cs`](https://github.com/AronDavis/FInt/releases/latest/download/FInt.cs)
 
-> ℹ️ The release contains only the `FInt.cs` file. GitHub auto-generates `.zip` and `.tar.gz` source downloads — those can be ignored.
+> ℹ️ Only the `FInt.cs` file is needed in the release. GitHub auto-generates `.zip` and `.tar.gz` files that can be ignored.
 
 ---
 
