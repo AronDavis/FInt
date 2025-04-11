@@ -75,11 +75,10 @@ jobs:
 
             # Release if valid
             - name: Create New Release
-              if: success() && github.ref == 'refs/heads/master'
+              if: success() && github.ref == 'refs/heads/master' # tests passed and sanity check on master branch
               uses: softprops/action-gh-release@v2
               with:
                 tag_name: ${{ env.VERSION }}
-                release_name: "Release ${{ env.COMMIT_HASH }}"
                 files: FInt/FInt.cs
               
             # Upload Test Artifacts
