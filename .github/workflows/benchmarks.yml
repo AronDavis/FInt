@@ -41,7 +41,7 @@ jobs:
                 echo Current directory is: ${{ github.workspace }}
             
             # Print the reason for the manual run if applicable
-            - name: 'Print Manual Run Reason'
+            - name: Print Manual Run Reason
               if: ${{ github.event_name == 'workflow_dispatch' }}
               run: |
                   echo 'Reason: ${{ github.event.inputs.reason }}'
@@ -59,8 +59,7 @@ jobs:
             # Restore/Build/Run
             - name: Restore, Build, and Run Benchmarks
               run: |
-                dotnet run --project Benchmarks/Benchmarks.csproj --configuration Release \
-                  > benchmark_results.txt
+                dotnet run --project Benchmarks/Benchmarks.csproj --configuration Release
             
             # Add workflow summary
             - name: Add benchmark results to workflow summary
@@ -68,7 +67,7 @@ jobs:
               run: |
                 echo "## 🚀 Benchmark Results" >> $GITHUB_STEP_SUMMARY
                 echo '```' >> $GITHUB_STEP_SUMMARY
-                cat benchmark_results.txt >> $GITHUB_STEP_SUMMARY
+                cat Benchmarks/BenchmarkDotNet.Artifacts/results/*-report-full.json
                 echo '```' >> $GITHUB_STEP_SUMMARY
 
             # Upload benchmark results as artifact
@@ -76,4 +75,4 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: benchmark-results
-                path: benchmark_results.txt
+                path: Benchmarks/BenchmarkDotNet.Artifacts/results/*.json
