@@ -249,13 +249,6 @@ public struct FInt
 		long rightDecimal = right._value % _SCALE;
 
 		/*
-		FInt m1 = new FInt(
-		(fi1Whole * fi2Whole * SCALE)
-		+ (fi1Whole * fi2Decimal) 
-		+ (fi1Decimal * fi2Whole)
-		+ ((fi1Decimal * fi2Decimal) / SCALE)
-		, false);
-
 		old method
 		FInt m2 = new FInt((fi1.value * fi2.value)/(SCALE), false);
 
