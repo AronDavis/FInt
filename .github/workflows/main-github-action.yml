@@ -64,6 +64,7 @@ jobs:
               run: | # RELEASE_NEEDED is set to empty to simplify checks (it is possible to set it to a string value e.g. RELEASE_NEEDED=true)
                 git fetch origin master --depth=2
                 CHANGED=$(git diff --name-only HEAD^ HEAD || true)
+                echo "Changed files:"
                 echo "$CHANGED"
                 if echo "$CHANGED" | grep -qE '^FInt\.cs$|^FInt/FInt\.Tests/.*$'; then
                   echo "RELEASE_NEEDED=" >> $GITHUB_ENV
