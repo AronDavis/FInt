@@ -9,6 +9,11 @@ namespace Benchmarks
     {
         static void Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                args = ["--filter", "*"];
+            }
+
             ManualConfig config = DefaultConfig.Instance.AddExporter(JsonExporter.Brief);
 
             IEnumerable<Summary> summaries = BenchmarkSwitcher
