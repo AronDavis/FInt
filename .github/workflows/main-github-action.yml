@@ -68,6 +68,7 @@ jobs:
                 echo "$CHANGED"
                 if echo "$CHANGED" | grep -qE '^FInt\/FInt\.cs$'; then
                   echo "RELEASE_NEEDED=" >> $GITHUB_ENV
+                  echo "Release is needed."
                 fi
                   
             # Restore
