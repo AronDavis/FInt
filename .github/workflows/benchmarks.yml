@@ -70,7 +70,7 @@ jobs:
                 
                 for file in BenchmarkDotNet.Artifacts/results/*.json; do
                   jq -r '
-                    def nano: (. * 1000 | sprintf("%.3f"));
+                    def nano: (. * 1000 | tostring | .[0:6]);
                     
                     .Benchmarks[] |
                     .Statistics as $s |
