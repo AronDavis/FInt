@@ -2,7 +2,7 @@
 
 namespace Benchmarks
 {
-    public class DivisionBenchmarks
+    public class MultiplicationBenchmarks
     {
         private FInt _a = new FInt(100);
         private FInt _b = new FInt(200);
@@ -11,9 +11,9 @@ namespace Benchmarks
         private long _bl = 200;
 
         [Benchmark]
-        public long DivisionLong() => _al / _bl;
+        public long MultiplicationLong() => _al * _bl;
 
         [Benchmark]
-        public FInt Division() => _a / _b;
+        public FInt Multiplication() => _a * _b;
     }
 }
