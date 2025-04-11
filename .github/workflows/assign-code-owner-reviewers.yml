@@ -1,4 +1,4 @@
-name: Auto Assign Code Owner Reviewer
+name: Assign Code Owner Reviewers
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
       - edited
 
 jobs:
-  assign-reviewer:
+  assign-reviewers:
     runs-on: ubuntu-latest
     steps:
     
