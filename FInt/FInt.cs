@@ -2,7 +2,7 @@ public struct FInt
 {
     #region Constants
 
-    private const int _PRICISION = 6;
+    public const int PRICISION = 6;
 	private const long _SCALE = 1000000;
 
     #endregion
@@ -36,7 +36,7 @@ public struct FInt
 	/// <summary>
 	/// Gets the decimal value of the number.
 	/// </summary>
-    public FInt Decimal
+    public FInt Decimal //TODO: THIS WON'T WORK WITH NEGATIVE NUMBERS
     {
         get
         {
@@ -336,11 +336,11 @@ public struct FInt
 		//if value is negative and it only has decimal digits
 		if (_value < 0 && _value > -_SCALE)
 		{
-			return $"-{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(_PRICISION, '0');
+			return $"-{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(PRICISION, '0');
 		}
 		else
 		{
-			return $"{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(_PRICISION, '0');
+			return $"{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(PRICISION, '0');
 		}
 	}
 
@@ -437,7 +437,7 @@ public struct FInt
     /// <param name="numerator"></param>
     /// <param name="denominator"></param>
     /// <returns></returns>
-    public static FInt MakeFraction(int numerator, int denominator)
+    public static FInt MakeFraction(int numerator, int denominator) //TODO: bake this into a constructor?
     {
         return numerator.FI() / denominator.FI();
     }
@@ -493,7 +493,7 @@ public struct FInt
 	/// </summary>
 	/// <param name="value"></param>
 	/// <returns></returns>
-	public static FInt Round(FInt value)
+	public static FInt Round(FInt value) //TODO: THIS WON'T WORK WITH NEGATIVE NUMBERS
 	{
 		FInt fiDecimal = value.Decimal;
 
