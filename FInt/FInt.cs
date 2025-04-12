@@ -575,7 +575,7 @@ public struct FInt
     /// <returns></returns>
     public static FInt Truncate(FInt value)
     {
-		return value / _SCALE;
+		return new FInt(value._value / _SCALE);
     }
 
     /// <summary>

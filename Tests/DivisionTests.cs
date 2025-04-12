@@ -23,7 +23,7 @@ namespace Tests
                 shiftedDecimal *= 10;
             }
 
-            Assert.AreEqual(expectedWhole.FI(), result.Sign * ((result.Sign * result) - result.Decimal));
+            Assert.AreEqual(expectedWhole.FI(), FInt.Truncate(result));
             Assert.AreEqual(expectedDecimal.FI(), shiftedDecimal);
         }
 
@@ -72,7 +72,7 @@ namespace Tests
                     shiftedDecimal *= 10;
                 }
 
-                Assert.AreEqual(ew.FI(), result.Sign * ((result.Sign * result) - result.Decimal));
+                Assert.AreEqual(ew.FI(), FInt.Truncate(result));
                 Assert.AreEqual(ed.FI(), shiftedDecimal);
             }
 
