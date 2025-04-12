@@ -256,12 +256,10 @@ public struct FInt
 		long rightDecimal = right._value % _SCALE;
 
 		/*
-
 		old method (so we can compare in tests)
 		FInt m2 = new FInt((fi1.value * fi2.value)/(SCALE), false);
 
 		Debug.Log(m1 + " vs " + m2 + "vs double: " + ((double)fi1.value/SCALE*(double)fi2.value/SCALE));
-
 		*/
 
 		//TODO: CHECK FOR OVERFLOW

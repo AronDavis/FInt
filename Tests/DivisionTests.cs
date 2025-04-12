@@ -14,6 +14,29 @@ namespace Tests
             Assert.ThrowsException<DivideByZeroException>(() => 1.FI() / (long)0);
         }
 
+        private void _assertDivision(FInt result, int expectedWhole, int expectedDecimal)
+        {
+            FInt shiftedDecimal = expectedDecimal;
+
+            while (shiftedDecimal.Decimal != 0)
+            {
+                shiftedDecimal *= 10;
+            }
+
+            Assert.AreEqual(expectedWhole.FI(), result.Sign * ((result.Sign * result) - result.Decimal));
+            Assert.AreEqual(expectedDecimal.FI(), shiftedDecimal);
+        }
+
+        private void _assertDivision<T1, T2>(T1 left, T2 right, Func<T1, T2, FInt> divide, int expectedWhole, int expectedDecimal)
+            where T1 : INumber<T1>
+            where T2 : INumber<T2>
+        {
+            _assertDivision(divide(left, right), expectedWhole, expectedDecimal);
+            _assertDivision(divide(-left, right), -expectedWhole, expectedDecimal);
+            _assertDivision(divide(left, -right), -expectedWhole, expectedDecimal);
+            _assertDivision(divide(-left, -right), expectedWhole, expectedDecimal);
+        }
+
         [DataTestMethod]
         [DataRow(0, 1, 0, 0)]
         [DataRow(1, 1, 1, 0)]
@@ -22,27 +45,15 @@ namespace Tests
         [DataRow(1, 4, 0, 25)]
         [DataRow(3, 2, 1, 5)]
         [DataRow(7, 3, 2, 333333)]
-        public void DivisionByFInt_ShouldWorkAsExpected(int left, int right, int expectedWhole, int expectedDecimal)
+        public void Division_ShouldWorkAsExpected(int left, int right, int expectedWhole, int expectedDecimal)
         {
-            void assertDivision(int l, int r, int ew, int ed)
-            {
-                FInt result = l.FI() / r.FI();
+            Func<int, int, FInt> divisionByFInt = (l, r) => l.FI() / r.FI();
+            Func<int, int, FInt> divisionByInt = (l, r) => l.FI() / r;
+            Func<int, long, FInt> divisionByLong = (l, r) => l.FI() / r;
 
-                FInt shiftedDecimal = ed;
-
-                while (shiftedDecimal.Decimal != 0)
-                {
-                    shiftedDecimal *= 10;
-                }
-
-                Assert.AreEqual(ew.FI(), result.Sign * ((result.Sign * result) - result.Decimal));
-                Assert.AreEqual(ed.FI(), shiftedDecimal);
-            }
-
-            assertDivision(left, right, expectedWhole, expectedDecimal);
-            assertDivision(-left, right, -expectedWhole, expectedDecimal);
-            assertDivision(left, -right, -expectedWhole, expectedDecimal);
-            assertDivision(-left, -right, expectedWhole, expectedDecimal);
+            _assertDivision(left, right, divisionByFInt, expectedWhole, expectedDecimal);
+            _assertDivision(left, right, divisionByInt, expectedWhole, expectedDecimal);
+            _assertDivision(left, right, divisionByLong, expectedWhole, expectedDecimal);
         }
 
         [DataTestMethod]
@@ -72,68 +83,6 @@ namespace Tests
             assertDivision(-numerator, denominator, -expectedWhole, expectedDecimal);
             assertDivision(numerator, -denominator, -expectedWhole, expectedDecimal);
             assertDivision(-numerator, -denominator, expectedWhole, expectedDecimal);
-        }
-
-        [DataTestMethod]
-        [DataRow(0, 1, 0, 0)]
-        [DataRow(1, 1, 1, 0)]
-        [DataRow(4, 2, 2, 0)]
-        [DataRow(1, 2, 0, 5)]
-        [DataRow(1, 4, 0, 25)]
-        [DataRow(3, 2, 1, 5)]
-        [DataRow(7, 3, 2, 333333)]
-        public void DivisionByInt_ShouldWorkAsExpected(int left, int right, int expectedWhole, int expectedDecimal)
-        {
-            void assertDivision(int l, int r, int ew, int ed)
-            {
-                FInt result = l.FI() / r;
-
-                FInt shiftedDecimal = ed;
-
-                while (shiftedDecimal.Decimal != 0)
-                {
-                    shiftedDecimal *= 10;
-                }
-
-                Assert.AreEqual(ew.FI(), result.Sign * ((result.Sign * result) - result.Decimal));
-                Assert.AreEqual(ed.FI(), shiftedDecimal);
-            }
-
-            assertDivision(left, right, expectedWhole, expectedDecimal);
-            assertDivision(-left, right, -expectedWhole, expectedDecimal);
-            assertDivision(left, -right, -expectedWhole, expectedDecimal);
-            assertDivision(-left, -right, expectedWhole, expectedDecimal);
-        }
-
-        [DataTestMethod]
-        [DataRow(0, 1, 0, 0)]
-        [DataRow(1, 1, 1, 0)]
-        [DataRow(4, 2, 2, 0)]
-        [DataRow(1, 2, 0, 5)]
-        [DataRow(1, 4, 0, 25)]
-        [DataRow(3, 2, 1, 5)]
-        [DataRow(7, 3, 2, 333333)]
-        public void DivisionByLong_ShouldWorkAsExpected(int left, long right, int expectedWhole, int expectedDecimal)
-        {
-            void assertDivision(int l, long r, int ew, int ed)
-            {
-                FInt result = l.FI() / r;
-
-                FInt shiftedDecimal = ed;
-
-                while (shiftedDecimal.Decimal != 0)
-                {
-                    shiftedDecimal *= 10;
-                }
-
-                Assert.AreEqual(ew.FI(), result.Sign * ((result.Sign * result) - result.Decimal));
-                Assert.AreEqual(ed.FI(), shiftedDecimal);
-            }
-
-            assertDivision(left, right, expectedWhole, expectedDecimal);
-            assertDivision(-left, right, -expectedWhole, expectedDecimal);
-            assertDivision(left, -right, -expectedWhole, expectedDecimal);
-            assertDivision(-left, -right, expectedWhole, expectedDecimal);
         }
     }
 }
