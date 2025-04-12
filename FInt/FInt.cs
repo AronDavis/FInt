@@ -2,7 +2,7 @@ public struct FInt
 {
     #region Constants
 
-    public const int PRICISION = 6;
+    public const int PRECISION = 6;
 	private const long _SCALE = 1_000_000;
 
     #endregion
@@ -108,6 +108,57 @@ public struct FInt
 
         _value = value * _SCALE;
     }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="FInt"/> from two <see cref="int"/> values.
+    /// </summary>
+    /// <param name="integerValue">The integer portion of the number.</param>
+    /// <param name="decimalValue">The decimal portion of the number.</param>
+    /// <param name="numDecimalDigits">The number of digits in <paramref name="decimalValue"/>.</param>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public FInt(int integerValue, int decimalValue, int numDecimalDigits)
+    {
+		if(decimalValue < 0)
+		{
+            throw new ArgumentException($"Decimal value can't be negative.", nameof(decimalValue));
+        }
+
+		//get the scale multiplier based on input
+        int decimalScale = numDecimalDigits switch
+        {
+            1 => 100_000,
+            2 => 10_000,
+            3 => 1_000,
+			4 => 100,
+            5 => 10,
+            6 => 1,
+            _ => throw new ArgumentOutOfRangeException(nameof(numDecimalDigits), $"Must be between 1 and {PRECISION}.")
+        };
+
+		//scale the decimal up to the correct value
+		long scaledDecimal = decimalValue * decimalScale;
+
+		if(scaledDecimal >= _SCALE)
+		{
+			throw new ArgumentException($"Scaled decimal value '{scaledDecimal}' cannot exceed {_SCALE}.");
+		}
+
+		//assign the scaled integer value
+		_value = integerValue * _SCALE;
+
+		//if the integer portion is negative
+		if(integerValue < 0)
+		{
+			//subtract the decimal portion
+            _value -= scaledDecimal;
+			return;
+        }
+
+        //integer is positive so add the decimal
+        _value += scaledDecimal;
+    }
+
 
     /// <summary>
     /// Initializes a new instance of <see cref="FInt"/> from a raw internal value without applying scaling.
@@ -346,11 +397,11 @@ public struct FInt
 		//if value is negative and it only has decimal digits
 		if (_value < 0 && _value > -_SCALE)
 		{
-			return $"-{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(PRICISION, '0');
+			return $"-{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(PRECISION, '0');
 		}
 		else
 		{
-			return $"{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(PRICISION, '0');
+			return $"{_value / _SCALE}." + (Abs(this)._value % _SCALE).ToString().PadLeft(PRECISION, '0');
 		}
 	}
 
@@ -442,17 +493,6 @@ public struct FInt
     }
 
     /// <summary>
-    /// Used to make fractional values.
-    /// </summary>
-    /// <param name="numerator"></param>
-    /// <param name="denominator"></param>
-    /// <returns></returns>
-    public static FInt MakeFraction(int numerator, int denominator) //TODO: bake this into a constructor?
-    {
-        return numerator.FI() / denominator.FI();
-    }
-
-    /// <summary>
     /// Returns the smaller of <paramref name="val1"/> and <paramref name="val2"/>.
     /// </summary>
     /// <param name="val1"></param>
@@ -508,29 +548,42 @@ public struct FInt
 		return value;
 	}
 
-	/// <summary>
-	/// Rounds <paramref name="value"/> to the nearest integral value.
-	/// </summary>
-	/// <param name="value"></param>
-	/// <returns></returns>
-	public static FInt Round(FInt value) //TODO: THIS WON'T WORK WITH NEGATIVE NUMBERS
+    /// <summary>
+    /// Returns the smallest integral value that is greater than or equal to <paramref name="value"/>.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static FInt Ceiling(FInt value)
 	{
-		FInt fiDecimal = value.Decimal;
+        return new FInt(value._value + (_SCALE - value.Decimal._value), UseScale.None);
+    }
 
-		if (fiDecimal >= MakeFraction(1, 2))
-		{
-			return (value - fiDecimal) + 1;
-		}
+    /// <summary>
+    /// Returns the largest integral value that is less than or equal to <paramref name="value"/>.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static FInt Floor(FInt value)
+    {
+		return new FInt(value._value - value.Decimal._value, UseScale.None);
+    }
 
-		return value - fiDecimal;
-	}
+    /// <summary>
+    /// Calculates the integral part of <paramref name="value"/>.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static FInt Truncate(FInt value)
+    {
+		return value / _SCALE;
+    }
 
-	/// <summary>
-	/// Returns the square root of <paramref name="value"/>.
-	/// </summary>
-	/// <param name="value"></param>
-	/// <returns></returns>
-	public static FInt Sqrt(FInt value)
+    /// <summary>
+    /// Returns the square root of <paramref name="value"/>.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static FInt Sqrt(FInt value)
 	{
 		if (value._value == 0)
 		{
