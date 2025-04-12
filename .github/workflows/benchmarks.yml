@@ -65,8 +65,8 @@ jobs:
             - name: Generate Markdown Summary from Benchmark JSON
               run: |
                 echo "## 🚀 Benchmark Summary" > benchmark_summary.md
-                echo '| Method | Mean | Error | StdDev |' >> benchmark_summary.md
-                echo '|--------|-----:|------:|-------:|' >> benchmark_summary.md
+                echo '| Method | Mean | Error | StdDev | Allocation |' >> benchmark_summary.md
+                echo '|--------|-----:|------:|-------:|-------:|' >> benchmark_summary.md
                 
                 for file in BenchmarkDotNet.Artifacts/results/*.json; do
                   jq -r '
@@ -74,7 +74,7 @@ jobs:
                     
                     .Benchmarks[] |
                     .Statistics as $s |
-                    "| \(.Method) | \($s.Mean | nano) ns | ±\($s.StandardError | nano) ns | \($s.StandardDeviation | nano) ns |"
+                    "| \(.Method) | \($s.Mean | nano) ns | ±\($s.StandardError | nano) ns | \($s.StandardDeviation | nano) ns | \(.Memory.BytesAllocatedPerOperation) B |"
                   ' "$file" >> benchmark_summary.md
                 done
 
