@@ -3,7 +3,7 @@ public struct FInt
     #region Constants
 
     public const int PRICISION = 6;
-	private const long _SCALE = 1000000;
+	private const long _SCALE = 1_000_000;
 
     #endregion
 
@@ -314,14 +314,14 @@ public struct FInt
 		return new FInt(whole * _SCALE + remainder, UseScale.None);
 	}
 
-	public static FInt operator / (FInt fi1, int i)
+	public static FInt operator / (FInt left, int right)
 	{
-		return new FInt(fi1._value / i, UseScale.None);
+		return new FInt(left._value / right, UseScale.None);
 	}
 
-	public static FInt operator / (FInt fi1, long lng)
+	public static FInt operator / (FInt left, long right)
 	{
-		return new FInt(fi1._value / lng, UseScale.None);
+		return new FInt(left._value / right, UseScale.None);
 	}
 
 	#endregion
