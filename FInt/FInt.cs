@@ -516,7 +516,7 @@ public struct FInt
     /// <param name="val1"></param>
     /// <param name="val2"></param>
     /// <returns></returns>
-    public static FInt a(FInt val1, FInt val2)
+    public static FInt Max(FInt val1, FInt val2)
 	{
 		if (val1 > val2)
 		{
