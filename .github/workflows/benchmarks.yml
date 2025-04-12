@@ -65,8 +65,8 @@ jobs:
             - name: Generate Markdown Summary from Benchmark JSON
               run: |
                 echo "## 🚀 Benchmark Summary" > benchmark_summary.md
-                echo '| Method | Mean | Error | StdDev |' >> benchmark_summary.md
-                echo '|--------|------|-------|--------|' >> benchmark_summary.md
+                echo '| Method | <center>Mean</center> | <center>Error</center> | <center>StdDev</center> |' >> benchmark_summary.md
+                echo '|--------|-----:|------:|-------:|' >> benchmark_summary.md
                 
                 for file in BenchmarkDotNet.Artifacts/results/*.json; do
                   jq -r '
