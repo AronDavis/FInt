@@ -52,19 +52,23 @@ public struct FInt
     }
 
 	/// <summary>
-	/// Gets the sign of the number.
+	/// Returns an integer that indicates the sign of the number.
 	/// </summary>
-    public FInt Sign
+    public int Sign
     {
         get
         {
-            if (_value >= 0)
+			if(_value == 0)
+			{
+				return 0;
+			}
+            else if (_value > 0)
             {
-                return 1.FI();
+                return 1;
             }
             else
             {
-                return (-1).FI();
+				return -1;
             }
         }
     }
@@ -110,18 +114,23 @@ public struct FInt
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="FInt"/> from two <see cref="int"/> values.
+    /// Initializes a new instance of <see cref="FInt"/> from two parts: the integer and the decimal.
     /// </summary>
-    /// <param name="integerValue">The integer portion of the number.</param>
-    /// <param name="decimalValue">The decimal portion of the number.</param>
-    /// <param name="numDecimalDigits">The number of digits in <paramref name="decimalValue"/>.</param>
+    /// <param name="integralValue">The integer portion of the number.  Can't be negative.</param>
+    /// <param name="decimalValue">The decimal portion of the number.  Can't be negative.</param>
+    /// <param name="numDecimalDigits">The number of digits in <paramref name="decimalValue"/>.  Must be between 1 and <see cref="PRECISION"/>.</param>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public FInt(int integerValue, int decimalValue, int numDecimalDigits)
+    public FInt(int integralValue, int decimalValue, int numDecimalDigits)
     {
-		if(decimalValue < 0)
+        if (integralValue < 0)
+        {
+            throw new ArgumentOutOfRangeException($"Integral value cannot be negative.", nameof(integralValue));
+        }
+
+        if (decimalValue < 0)
 		{
-            throw new ArgumentException($"Decimal value can't be negative.", nameof(decimalValue));
+            throw new ArgumentOutOfRangeException($"Decimal value can't be negative.", nameof(decimalValue));
         }
 
 		//get the scale multiplier based on input
@@ -145,17 +154,67 @@ public struct FInt
 		}
 
 		//assign the scaled integer value
-		_value = integerValue * _SCALE;
+		_value = integralValue * _SCALE;
 
-		//if the integer portion is negative
-		if(integerValue < 0)
+        //add the decimal
+        _value += scaledDecimal;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="FInt"/> from two parts: the integer and the decimal.
+    /// </summary>
+    /// <param name="integralValue">The integer portion of the number.  Can't be negative.</param>
+    /// <param name="decimalValue">The decimal portion of the number.  Can't be negative.</param>
+    /// <param name="numDecimalDigits">The number of digits in <paramref name="decimalValue"/>.  Must be between 1 and <see cref="PRECISION"/>.</param>
+	/// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+	/// <exception cref="OverflowException"></exception>
+    public FInt(long integralValue, int decimalValue, int numDecimalDigits)
+    {
+		if(integralValue < 0)
 		{
-			//subtract the decimal portion
-            _value -= scaledDecimal;
-			return;
+            throw new ArgumentOutOfRangeException($"Integral value cannot be negative.", nameof(integralValue));
         }
 
-        //integer is positive so add the decimal
+        if (decimalValue < 0)
+        {
+            throw new ArgumentOutOfRangeException($"Decimal value cannot be negative.", nameof(decimalValue));
+        }
+
+        if (integralValue > long.MaxValue / _SCALE)
+        {
+            throw new OverflowException("Overflow caused by scaling integral value.");
+        }
+
+        //get the scale multiplier based on input
+        int decimalScale = numDecimalDigits switch
+        {
+            1 => 100_000,
+            2 => 10_000,
+            3 => 1_000,
+            4 => 100,
+            5 => 10,
+            6 => 1,
+            _ => throw new ArgumentOutOfRangeException(nameof(numDecimalDigits), $"Decimal digits must be between 1 and {PRECISION}.")
+        };
+
+        //scale the decimal up to the correct value
+        long scaledDecimal = decimalValue * decimalScale;
+
+        if (scaledDecimal >= _SCALE)
+        {
+            throw new ArgumentException($"Scaled decimal value '{scaledDecimal}' cannot exceed '{_SCALE}'.  Check {nameof(decimalValue)} and {nameof(numDecimalDigits)}.");
+        }
+
+        //assign the scaled integer value
+        _value = integralValue * _SCALE;
+
+        if (long.MaxValue - _value < scaledDecimal)
+        {
+            throw new OverflowException($"Max value is '{MaxValue}'.");
+        }
+
+        //add the decimal
         _value += scaledDecimal;
     }
 
@@ -489,7 +548,64 @@ public struct FInt
 	/// <returns></returns>
     public static FInt Parse(string s)
     {
-        return new FInt(long.Parse(s));
+		int decimalPointIndex = s.IndexOf('.');
+
+		if(decimalPointIndex == -1)
+		{
+            return long.Parse(s);
+        }
+
+		string integralString = s.Substring(0, decimalPointIndex);
+
+		//don't take more digits that we can handle
+		int decimalStringLength = int.Min(s.Length - (decimalPointIndex + 1), PRECISION);
+        string decimalString = s.Substring(decimalPointIndex + 1, decimalStringLength);
+
+		long integralValue = 0;
+		int decimalValue = 0;
+
+		int sign = 1;
+
+		if (integralString.Length > 0)
+		{
+			if (integralString == "-")
+			{
+				sign = -1;
+			}
+			else
+			{
+				if (integralString[0] == '-')
+				{
+                    sign = -1;
+
+                    //remove the negative sign
+                    integralString = integralString.Substring(1);
+				}
+
+                integralValue = long.Parse(integralString);
+            }
+        }
+
+        if (decimalString.Length > 0)
+        {
+			if (decimalString[0] == '-')
+			{
+				throw new FormatException($"The input string '{s}' was not in a correct format.");
+			}
+
+            decimalValue = int.Parse(decimalString);
+        }
+
+		int numDecimalDigits = int.Max(1, decimalString.Length);
+
+		FInt result = new FInt(integralValue, decimalValue, numDecimalDigits);
+
+        if (sign < 0)
+		{
+			result = -result;
+		}
+
+		return result;
     }
 
     /// <summary>
@@ -778,8 +894,13 @@ public struct FInt
 
 public static class FIntQoLExtensions
 {
-	public static FInt FI(this int i)
+	public static FInt FI(this int value)
 	{
-		return new FInt(i);
+		return value;
 	}
+
+	public static FInt FI(this long value)
+    {
+		return value;
+    }
 }
