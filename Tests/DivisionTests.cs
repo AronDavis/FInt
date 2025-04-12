@@ -13,21 +13,25 @@ namespace Tests
         [DataRow(7, 3, 2, 333333)]
         public void DivisionWithNonIntegerQuotient_ShouldWorkAsExpected(int left, int right, int expectedWhole, int expectedDecimal)
         {
-            FInt result = left.FI() / right.FI();
-
-            result = -1.FI() / 2;
-
-            result = result.Decimal;
-
-            FInt shiftedDecimal = expectedDecimal;
-
-            while(shiftedDecimal.Decimal != 0)
+            void assertDivision(int l, int r, int ew, int ed)
             {
-                shiftedDecimal *= 10;
+                FInt result = l.FI() / r.FI();
+
+                FInt shiftedDecimal = ed;
+
+                while (shiftedDecimal.Decimal != 0)
+                {
+                    shiftedDecimal *= 10;
+                }
+
+                Assert.AreEqual(ew.FI(), result.Sign * ((result.Sign * result) - result.Decimal));
+                Assert.AreEqual(ed.FI(), shiftedDecimal);
             }
-            
-            Assert.AreEqual(expectedWhole.FI(), result - result.Decimal);
-            Assert.AreEqual(expectedDecimal.FI(), shiftedDecimal);
+
+            assertDivision(left, right, expectedWhole, expectedDecimal);
+            assertDivision(-left, right, -expectedWhole, expectedDecimal);
+            assertDivision(left, -right, -expectedWhole, expectedDecimal);
+            assertDivision(-left, -right, expectedWhole, expectedDecimal);
         }
 
         [DataTestMethod]

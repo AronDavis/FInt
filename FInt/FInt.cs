@@ -36,11 +36,18 @@ public struct FInt
 	/// <summary>
 	/// Gets the decimal value of the number.
 	/// </summary>
-    public FInt Decimal //TODO: THIS WON'T WORK WITH NEGATIVE NUMBERS
+    public FInt Decimal
     {
         get
         {
-            return new FInt(_value % _SCALE, UseScale.None);
+			long scaledValue = _value % _SCALE;
+
+			if(scaledValue < 0)
+			{
+                scaledValue = -scaledValue;
+            }
+
+            return new FInt(scaledValue % _SCALE, UseScale.None);
         }
     }
 
@@ -91,12 +98,12 @@ public struct FInt
     /// Initializes a new instance of <see cref="FInt"/> from a <see cref="long"/> value.
     /// </summary>
     /// <param name="value">The value to convert to <see cref="FInt"/>.</param>
-	/// <exception cref="ArgumentException">Will throw if <paramref name="value"/> overflows when scaled internally.</exception>
+	/// <exception cref="OverflowException">Will throw if <paramref name="value"/> overflows when scaled internally.</exception>
     public FInt(long value)
 	{
         if (value > long.MaxValue / _SCALE || value < long.MinValue / _SCALE)
         {
-            throw new ArgumentException("FInt overflow on creation with scaling", nameof(value));
+            throw new OverflowException("FInt overflow on creation with scaling.");
         }
 
         _value = value * _SCALE;
@@ -230,7 +237,7 @@ public struct FInt
 	{
 		if (value._value == long.MinValue)
 		{
-			throw new ArgumentException("FInt overflow on negative operator.", nameof(value));
+			throw new OverflowException("FInt overflow on negative operator.");
 		}
 
 		return new FInt(-value._value, UseScale.None);
@@ -356,7 +363,7 @@ public struct FInt
 
 		if (longValue > int.MaxValue || longValue < int.MinValue)
 		{
-            throw new ArgumentException("Overflow when converting FInt to int.", nameof(value));
+            throw new OverflowException("Overflow when converting FInt to int.");
 		}
 
 		return (int)longValue;
@@ -485,7 +492,17 @@ public struct FInt
 	/// <returns></returns>
 	public static FInt Abs(FInt value)
 	{
-		return new FInt((value._value < 0) ? -value._value : value._value, UseScale.None);
+		if (value._value < 0)
+		{
+			if (value._value == long.MinValue)
+			{
+				throw new OverflowException("Cannot get absolute value of minimum value.");
+			}
+
+			return new FInt(-value._value, UseScale.None);
+		}
+
+		return value;
 	}
 
 	/// <summary>
