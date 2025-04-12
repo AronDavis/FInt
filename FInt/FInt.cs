@@ -300,10 +300,15 @@ public struct FInt
 
 	public static FInt operator / (FInt left, FInt right)
 	{
-		//TODO: overflow check on right being < 0?
+		if(right._value == 0)
+		{
+			throw new DivideByZeroException();
+		}
+
+		//TODO: overflow check +/- values that approach min/max values (like +right < 1)?
 
 		long whole = left._value / right._value;
-		long remainder = _SCALE * (left._value - whole * right._value);
+		long remainder = _SCALE * (left._value - (whole * right._value));  //TODO: if we wanted to round the last digit, we could * 10, round based on the last digit, then truncate the last digit (e.g. 2/3 -> 6666666 -> 6666670 -> 666667)
 		remainder /= right._value;
 
 		return new FInt(whole * _SCALE + remainder, UseScale.None);

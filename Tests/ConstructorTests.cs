@@ -36,7 +36,7 @@ namespace Tests
         [TestMethod]
         public void LongConstructor_ThrowsOnOverflow()
         {
-            Assert.ThrowsException<ArgumentException>(() => new FInt(long.MaxValue));
+            Assert.ThrowsException<OverflowException>(() => new FInt(long.MaxValue));
         }
     }
 }
